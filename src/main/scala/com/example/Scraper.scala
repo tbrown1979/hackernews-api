@@ -12,7 +12,9 @@ object HackerNewsInfo {
   val url: String = "https://news.ycombinator.com/"
 }
 //need models
-case class Post(title: String, link: String, points: String)
+case class Post(title: String, link: String, points: String) {
+  override def toString: String = s"Post($title, $link, $points)\n"
+}
 
 class HackerNewsScraper {
   implicit val actorSystem = Boot.system
@@ -28,16 +30,15 @@ class HackerNewsScraper {
   //h3.r > a
   def getFrontPagePosts: Future[String] = {
     val posts = doc.map(_.select("tbody").get(0).select("table").get(1).select("table").select("tr:not([style])"))
-    //val p1 = posts.map(_.select("tr:contains(()"))
-    //val p2 = posts.map(_.select("tr:contains(points)").toList)
+
     val postsWithPoints =
       for {
         p <- posts
         p_ <- posts.map(_.drop(1))
-      } yield p.zip(p_)
-    postsWithPoints.map(_.take(1).map(e => Post(e._1.select("a").get(1).text, "", "")).toString)
-
-
-    //Post(e.select("a").toString, e.select("a").attr("url"), e.select("span[id]").toString)).toString)
+      } yield p.zip(p_).zipWithIndex.filterNot(_._2 % 2 == 1).map(_._1)
+    postsWithPoints.map(_.map(e =>
+      Post(e._1.select("a").get(1).text,
+           e._1.select("a").get(1).attr("href").toString,
+           e._2.select("span").text)).toString)
   }
 }
