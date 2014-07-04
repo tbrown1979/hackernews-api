@@ -11,8 +11,6 @@ import scala.xml.NodeSeq
 class MyServiceSpec extends Specification with Specs2RouteTest with MyService {
   def actorRefFactory = system
 
-  val extractor = new MockExtractor{}
-
   "MyService" should {
 
     "return a greeting for GET requests to the root path" in {
@@ -34,13 +32,4 @@ class MyServiceSpec extends Specification with Specs2RouteTest with MyService {
       }
     }
   }
-}
-
-trait MockExtractor extends Extractor {
-  import ExecutionContext.Implicits.global
-  def extractXML(url: String): Future[NodeSeq] =
-    Future {
-      <html> test </html>
-    }
-
 }
