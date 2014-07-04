@@ -11,6 +11,7 @@ import concurrent.Future
 import concurrent.ExecutionContext
 import scala.util.{Success, Failure}
 import akka.actor.{ActorContext}
+import org.jsoup.select.Elements
 
 class MyServiceActor extends Actor with MyService {
   def actorRefFactory = context
@@ -21,12 +22,14 @@ class MyServiceActor extends Actor with MyService {
 trait MyService extends HttpService {
   implicit def executionContext = actorRefFactory.dispatcher
 
+  val hns = new HackerNewsScraper
+  val posts: Future[String] = hns.getFrontPagePosts
   val myRoute =
     path("") {
       get {
-        respondWithMediaType(`text/html`) { // XML is marshalled to `text/xml` by default, so we simply override here
+        respondWithMediaType(`text/html`) {
           complete {
-            {Scraper.scrape("https://news.ycombinator.com/").map(_.toString)}
+            {posts}
           }
         }
       }
