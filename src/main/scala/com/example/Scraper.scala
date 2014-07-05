@@ -25,26 +25,25 @@ class HackerNewsScraper {
   }
 
   def getFrontPagePosts: Future[ApiResponse] = {
-    val mainPage = doc()
-    val scrapedPosts = mainPage.map(scrapePosts(_))
-
-    val posts: Future[Posts] = scrapedPosts.map(getPosts(_))
-
-    posts.flatMap(p => mainPage.map(d => ApiResponse(getNextId(d), p)))
+    getPostsForPage()
   }
 
   def showHackerNewsPosts: Future[ApiResponse] = {
-    val showHNPage = doc("show")
-    val scrapedPosts = showHNPage.map(scrapePosts(_))
-
-    val posts: Future[Posts] = scrapedPosts.map(getPosts(_, 3))
-
-    posts.flatMap(p => showHNPage.map(d => ApiResponse(getNextId(d), p)))
+    getPostsForPage("show", 1)
   }
 
-  def getPosts(scrapedPosts: Elements, offset: Int = 0): Posts =
-    Posts(zipPostsWithInfo(scrapedPosts, offset)
-      .map(implicit html => Post(author, title, link, points, numberOfComments)))
+  def getPostsForPage(ext: String = "", offset: Int = 0): Future[ApiResponse] = {
+    val page = doc(ext)
+    val scrapedPosts = page.map(scrapePosts(_))
+
+    val posts: Future[List[Post]] = scrapedPosts.map(getPosts(_, offset))
+
+    posts.flatMap(p => page.map(d => ApiResponse(getNextId(d), p)))
+  }
+
+  private def getPosts(scrapedPosts: Elements, offset: Int = 0): List[Post] =
+    zipPostsWithInfo(scrapedPosts, offset)
+      .map(implicit html => Post(author, title, link, points, numberOfComments))
 
   private def scrapePosts(html: Document): Elements =
     html.select("tbody").get(0).select("table").get(1).select("table").select("tr:not([style])")

@@ -35,5 +35,14 @@ trait MyService extends HttpService {
           }
         }
       }
+    } ~
+    path("show") {
+      get {
+        respondWithMediaType(`application/json`) {
+          complete {
+            {hns.showHackerNewsPosts}
+          }
+        }
+      }
     }
 }
