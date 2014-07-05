@@ -12,6 +12,8 @@ import concurrent.ExecutionContext
 import scala.util.{Success, Failure}
 import akka.actor.{ActorContext}
 import org.jsoup.select.Elements
+import spray.httpx.SprayJsonSupport._
+import spray.util._
 
 class MyServiceActor extends Actor with MyService {
   def actorRefFactory = context
@@ -23,11 +25,11 @@ trait MyService extends HttpService {
   implicit def executionContext = actorRefFactory.dispatcher
 
   val hns = new HackerNewsScraper
-  val posts: Future[String] = hns.getFrontPagePosts
+  val posts = hns.getFrontPagePosts
   val myRoute =
     path("") {
       get {
-        respondWithMediaType(`text/html`) {
+        respondWithMediaType(`application/json`) {
           complete {
             {posts}
           }
