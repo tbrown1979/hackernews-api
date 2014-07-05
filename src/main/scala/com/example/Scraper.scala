@@ -17,43 +17,58 @@ class HackerNewsScraper {
   import actorSystem.dispatcher
   import HackerNewsInfo._
 
-  val doc: Future[Document] = Future {
-    Jsoup.connect(baseUrl)
+  def doc(ext: String = ""): Future[Document] = Future {
+    Jsoup.connect(baseUrl + ext)
       .userAgent("Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6")
       .referrer("http://www.google.com")
       .get()
   }
-  case class PostHtml(title: Element, info: Element)
-  def getFrontPagePosts: Future[List[Post]] = {
-    val posts = doc.map(_.select("tbody").get(0).select("table").get(1).select("table").select("tr:not([style])"))
 
-    val postsWithPoints: Future[List[PostHtml]] = zipPostsWithInfo(posts)
-    postsWithPoints.map(_.map(implicit html =>
-      Post(
-        getAuthor(html),
-        getTitle,
-        getLink(html),
-        getPoints(html),
-        getNumberOfComments(html)
-      )))
-    }
+  def getFrontPagePosts: Future[ApiResponse] = {
+    val mainPage = doc()
+    val scrapedPosts = mainPage.map(scrapePosts(_))
 
-  private def getAuthor(implicit html: PostHtml): String =
+    val posts: Future[Posts] = scrapedPosts.map(getPosts(_))
+
+    posts.flatMap(p => mainPage.map(d => ApiResponse(getNextId(d), p)))
+  }
+
+  def showHackerNewsPosts: Future[ApiResponse] = {
+    val showHNPage = doc("show")
+    val scrapedPosts = showHNPage.map(scrapePosts(_))
+
+    val posts: Future[Posts] = scrapedPosts.map(getPosts(_, 3))
+
+    posts.flatMap(p => showHNPage.map(d => ApiResponse(getNextId(d), p)))
+  }
+
+  def getPosts(scrapedPosts: Elements, offset: Int = 0): Posts =
+    Posts(zipPostsWithInfo(scrapedPosts, offset)
+      .map(implicit html => Post(author, title, link, points, numberOfComments)))
+
+  private def scrapePosts(html: Document): Elements =
+    html.select("tbody").get(0).select("table").get(1).select("table").select("tr:not([style])")
+
+  private def getNextId(html: Document): String =
+    html.select("td.title > a").attr("href")
+
+  private def author(implicit html: PostHtml): String =
     html.info.select("td > a").first.text
 
-  private def getTitle(implicit html: PostHtml): String =
+  private def title(implicit html: PostHtml): String =
     html.title.select("td > a").text
 
-  private def getLink(implicit html: PostHtml): String =
+  private def link(implicit html: PostHtml): String =
     html.title.select("td > a").attr("href").toString
 
-  private def getPoints(implicit html: PostHtml): String =
+  private def points(implicit html: PostHtml): String =
     html.info.select("span").text
 
-  private def getNumberOfComments(implicit html: PostHtml): Int =
-    html.info.select("a").get(1).text.trim.filter(_.isDigit).toInt
+  private def numberOfComments(implicit html: PostHtml): String =
+    html.info.select("a").get(1).text.trim.filter(_.isDigit).toString
 
-  private def zipPostsWithInfo(posts: Future[Elements]): Future[List[PostHtml]] =
-    posts.map(p => p.zip(p.drop(1)).map{case (a, b) => PostHtml(a, b)}.sliding(1,2).flatten.toList)
-
+  private def zipPostsWithInfo(posts: Elements, offset: Int = 0): List[PostHtml] = {
+    val cleanedPosts = posts.drop(offset)
+    cleanedPosts.zip(cleanedPosts.drop(1)).map{case (a, b) => PostHtml(a, b)}.sliding(1,2).flatten.toList
+  }
 }
