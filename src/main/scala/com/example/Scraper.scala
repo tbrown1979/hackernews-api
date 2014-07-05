@@ -7,6 +7,7 @@ import scala.util.{Success, Failure}
 import concurrent.Future
 import concurrent.ExecutionContext
 import scala.collection.JavaConversions._
+import Utils._
 
 object HackerNewsInfo {
   val baseUrl: String = "https://news.ycombinator.com/"
@@ -24,21 +25,21 @@ class HackerNewsScraper {
       .get()
   }
 
-  def getFrontPagePosts: Future[ApiResponse] = {
+  def getFrontPagePosts: Future[Posts] = {
     getPostsForPage()
   }
 
-  def showHackerNewsPosts: Future[ApiResponse] = {
+  def showHackerNewsPosts: Future[Posts] = {
     getPostsForPage("show", 1)
   }
 
-  def getPostsForPage(ext: String = "", offset: Int = 0): Future[ApiResponse] = {
+  def getPostsForPage(ext: String = "", offset: Int = 0): Future[Posts] = {
     val page = doc(ext)
     val scrapedPosts = page.map(scrapePosts(_))
 
     val posts: Future[List[Post]] = scrapedPosts.map(getPosts(_, offset))
 
-    posts.flatMap(p => page.map(d => ApiResponse(getNextId(d), p)))
+    posts.flatMap(p => page.map(d => Posts(getNextId(d), p)))
   }
 
   private def getPosts(scrapedPosts: Elements, offset: Int = 0): List[Post] =
@@ -49,7 +50,7 @@ class HackerNewsScraper {
     html.select("tbody").get(0).select("table").get(1).select("table").select("tr:not([style])")
 
   private def getNextId(html: Document): String =
-    html.select("td.title > a").attr("href")
+    html.select("td.title").last.select("a").attr("href")
 
   private def author(implicit html: PostHtml): String =
     html.info.select("td > a").first.text
@@ -60,11 +61,11 @@ class HackerNewsScraper {
   private def link(implicit html: PostHtml): String =
     html.title.select("td > a").attr("href").toString
 
-  private def points(implicit html: PostHtml): String =
-    html.info.select("span").text
+  private def points(implicit html: PostHtml): Int =
+    html.info.select("span").text.safeToInt()
 
-  private def numberOfComments(implicit html: PostHtml): String =
-    html.info.select("a").get(1).text.trim.filter(_.isDigit).toString
+  private def numberOfComments(implicit html: PostHtml): Int =
+    html.info.select("a").get(1).text.safeToInt()
 
   private def zipPostsWithInfo(posts: Elements, offset: Int = 0): List[PostHtml] = {
     val cleanedPosts = posts.drop(offset)
