@@ -30,7 +30,7 @@ trait context extends Scope {
 }
 
 object HtmlPath {
-  val path = "src/test/scala/com/example/Html/"
+  val path = "src/test/scala/html/"
   val newest = "newest.html"
 }
 
