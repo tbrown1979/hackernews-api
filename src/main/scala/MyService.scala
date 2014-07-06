@@ -21,31 +21,35 @@ class MyServiceActor extends Actor with MyService {
   def receive = runRoute(myRoute)
 }
 
-trait MyService extends HttpService {
+trait MyServiceRoutes extends HttpService {
   implicit def executionContext = actorRefFactory.dispatcher
 
-  lazy val hns = new HNService{}
-  lazy val posts = hns.getFrontPagePosts
+  val hns: HN
+
   val myRoute =
     path("") {
       get {
         complete {
-         "test"// {posts}
+          hns.getFrontPagePosts
         }
       }
     } ~
     path("show") {
       get {
         complete {
-          {hns.showHackerNewsPosts}
+          "test"//hns.showHackerNewsPosts
         }
       }
     } ~
     path("newest") {
       get {
         complete {
-          {hns.getNewest}
+          "test"//hns.getNewest
         }
       }
     }
+}
+
+trait MyService extends MyServiceRoutes {
+  val hns = new HNService{}
 }

@@ -26,31 +26,5 @@ object ScraperSpec extends Specification {
 }
 
 trait context extends Scope {
-  val scraper = new MockService
-}
-
-object HtmlPath {
-  val path = "src/test/scala/html/"
-  val newest = "newest.html"
-}
-
-trait MockFetcher extends Fetcher {
-  import HtmlPath._
-  implicit val ec: ExecutionContext
-  def getHtml(ext: String): Future[Document] = {
-    val file = ext match {
-      case "newest" => new File(path + newest)
-      case "show" => new File("/html/....html")
-      case _ => new File("asdf.html")
-    }
-    Future(Jsoup.parse(file, "UTF-8", "http://example.com/"))
-  }
-}
-
-class MockScraper extends HackerNewsPostScraper with MockFetcher {
-  implicit val ec = ExecutionContext.Implicits.global
-}
-
-class MockService extends HN {
-  val webScraper: HNScraper = new MockScraper
+  val scraper = new MockService{}
 }

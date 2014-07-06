@@ -13,14 +13,14 @@ import HttpCharsets._
 import HttpHeaders._
 
 
-class MyServiceSpec extends Specification with Specs2RouteTest with MyService {
+class MyServiceSpec extends Specification with Specs2RouteTest with MockMyService {
   def actorRefFactory = system
 
   "MyService" should {
 
     "return a greeting for GET requests to the root path" in {
       Get() ~> myRoute ~> check {
-        status === (OK)
+        status === StatusCodes.OK
       }
     }
 
@@ -37,4 +37,8 @@ class MyServiceSpec extends Specification with Specs2RouteTest with MyService {
       }
     }
   }
+}
+
+trait MockMyService extends MyServiceRoutes {
+  lazy val hns = new MockService{}
 }

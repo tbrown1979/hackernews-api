@@ -17,7 +17,7 @@ trait HN {
 }
 
 trait HNService extends HN {
-  val webScraper: HNScraper = new HackerNewsWebsiteScraper{}
+  lazy val webScraper: HNScraper = new HackerNewsWebsiteScraper{}
 }
 
 object HackerNewsInfo {
