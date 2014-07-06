@@ -9,33 +9,34 @@ import concurrent.ExecutionContext
 import scala.collection.JavaConversions._
 import Utils._
 
-object HackerNewsInfo {
-  val baseUrl: String = "https://news.ycombinator.com/"
+trait HNScraper {
+  def getPostsForPage(ext: String = "", offset: Int = 0): Future[Posts]
 }
 
-class HackerNewsScraper {
-  implicit val actorSystem = Boot.system
-  import actorSystem.dispatcher
-  import HackerNewsInfo._
+trait Fetcher {
+  def getHtml(ext: String): Future[Document]
+}
 
-  def doc(ext: String = ""): Future[Document] = Future {
+trait HackerNewsFetcher extends Fetcher {
+  import HackerNewsInfo._
+  implicit val ec: ExecutionContext
+
+  def getHtml(ext: String = ""): Future[Document] = Future {
     Jsoup.connect(baseUrl + ext)
       .userAgent("Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6")
       .referrer("http://www.google.com")
       .get()
   }
+}
 
-  def getFrontPagePosts: Future[Posts] = {
-    getPostsForPage()
-  }
+trait HackerNewsPostScraper extends HNScraper {
+  implicit val ec: ExecutionContext
 
-  def showHackerNewsPosts: Future[Posts] = {
-    getPostsForPage("show", 1)
-  }
+  def getHtml(ext: String): Future[Document]
 
   def getPostsForPage(ext: String = "", offset: Int = 0): Future[Posts] = {
-    val page = doc(ext)
-    val scrapedPosts = page.map(scrapePosts(_))
+    val page: Future[Document] = getHtml(ext)
+    val scrapedPosts: Future[Elements] = page.map(scrapePosts(_))
 
     val posts: Future[List[Post]] = scrapedPosts.map(getPosts(_, offset))
 
@@ -43,7 +44,7 @@ class HackerNewsScraper {
   }
 
   private def getPosts(scrapedPosts: Elements, offset: Int = 0): List[Post] =
-    zipPostsWithInfo(scrapedPosts, offset)
+    zipRows(scrapedPosts, offset)
       .map(implicit html => Post(author, title, link, points, numberOfComments))
 
   private def scrapePosts(html: Document): Elements =
@@ -56,7 +57,7 @@ class HackerNewsScraper {
     html.info.select("td > a").first.text
 
   private def title(implicit html: PostHtml): String =
-    html.title.select("td > a").text
+    html.title.select("td > a").text.toString
 
   private def link(implicit html: PostHtml): String =
     html.title.select("td > a").attr("href").toString
@@ -67,8 +68,12 @@ class HackerNewsScraper {
   private def numberOfComments(implicit html: PostHtml): Int =
     html.info.select("a").get(1).text.safeToInt()
 
-  private def zipPostsWithInfo(posts: Elements, offset: Int = 0): List[PostHtml] = {
+  private def zipRows(posts: Elements, offset: Int = 0): List[PostHtml] = {
     val cleanedPosts = posts.drop(offset)
     cleanedPosts.zip(cleanedPosts.drop(1)).map{case (a, b) => PostHtml(a, b)}.sliding(1,2).flatten.toList
   }
+}
+
+trait HackerNewsWebsiteScraper extends HackerNewsFetcher with HackerNewsPostScraper {
+  implicit val ec = Boot.system.dispatcher
 }

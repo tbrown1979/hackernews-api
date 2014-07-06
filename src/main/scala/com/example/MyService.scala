@@ -24,7 +24,7 @@ class MyServiceActor extends Actor with MyService {
 trait MyService extends HttpService {
   implicit def executionContext = actorRefFactory.dispatcher
 
-  val hns = new HackerNewsScraper
+  val hns = new HNService{}
   val posts = hns.getFrontPagePosts
   val myRoute =
     path("") {
@@ -38,10 +38,15 @@ trait MyService extends HttpService {
     } ~
     path("show") {
       get {
-        respondWithMediaType(`application/json`) {
-          complete {
-            {hns.showHackerNewsPosts}
-          }
+        complete {
+          {hns.showHackerNewsPosts}
+        }
+      }
+    } ~
+    path("newest") {
+      get {
+        complete {
+          {hns.getNewest}
         }
       }
     }
