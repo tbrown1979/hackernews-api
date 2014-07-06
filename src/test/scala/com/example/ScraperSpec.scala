@@ -15,9 +15,6 @@ import java.io.File
 import scala.concurrent._
 import scala.concurrent.duration._
 
-
-
-
 object ScraperSpec extends Specification {
 
   "HNScraper" should {
@@ -34,6 +31,7 @@ trait context extends Scope {
 
 object HtmlPath {
   val path = "src/test/scala/com/example/Html/"
+  val newest = "newest.html"
 }
 
 trait MockFetcher extends Fetcher {
@@ -41,18 +39,16 @@ trait MockFetcher extends Fetcher {
   implicit val ec: ExecutionContext
   def getHtml(ext: String): Future[Document] = {
     val file = ext match {
-      case "newest" => new File(path + "untitled.html")
+      case "newest" => new File(path + newest)
       case "show" => new File("/html/....html")
       case _ => new File("asdf.html")
     }
-    //println(file.getAbsoluteFile)
     Future(Jsoup.parse(file, "UTF-8", "http://example.com/"))
   }
 }
 
 class MockScraper extends HackerNewsPostScraper with MockFetcher {
   implicit val ec = ExecutionContext.Implicits.global
-//implicit val ec: ExecutionContext = ExecutionContext
 }
 
 class MockService extends HN {

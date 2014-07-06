@@ -6,7 +6,12 @@ import spray.http._
 import StatusCodes._
 import concurrent.Future
 import concurrent._
-import scala.xml.NodeSeq
+import spray.json._
+import spray.httpx.SprayJsonSupport._
+import MediaTypes._
+import HttpCharsets._
+import HttpHeaders._
+
 
 class MyServiceSpec extends Specification with Specs2RouteTest with MyService {
   def actorRefFactory = system
@@ -15,7 +20,9 @@ class MyServiceSpec extends Specification with Specs2RouteTest with MyService {
 
     "return a greeting for GET requests to the root path" in {
       Get() ~> myRoute ~> check {
-        responseAs[String] must contain("test")
+//        body === HttpEntity(ContentType(`application/json`, `UTF-8`))
+        //responseAs[String] must contain("items")
+        status === (OK)
       }
     }
 
