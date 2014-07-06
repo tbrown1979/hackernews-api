@@ -37,14 +37,14 @@ trait MyServiceRoutes extends HttpService {
     path("show") {
       get {
         complete {
-          "test"//hns.showHackerNewsPosts
+          hns.showHackerNewsPosts
         }
       }
     } ~
     path("newest") {
       get {
         complete {
-          "test"//hns.getNewest
+          hns.getNewest
         }
       }
     }

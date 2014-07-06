@@ -4,6 +4,8 @@ import org.specs2.mutable.Specification
 import spray.testkit.Specs2RouteTest
 import spray.http._
 import StatusCodes._
+import scala.concurrent.duration.FiniteDuration
+import scala.concurrent.duration._
 import concurrent.Future
 import concurrent._
 import spray.json._
@@ -15,6 +17,7 @@ import HttpHeaders._
 
 class MyServiceSpec extends Specification with Specs2RouteTest with MockMyService {
   def actorRefFactory = system
+  implicit val routeTestTimeout = RouteTestTimeout(DurationInt(5).second)
 
   "MyService" should {
 

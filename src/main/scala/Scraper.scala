@@ -75,5 +75,5 @@ trait HackerNewsPostScraper extends HNScraper {
 }
 
 trait HackerNewsWebsiteScraper extends HackerNewsFetcher with HackerNewsPostScraper {
-  implicit val ec = Boot.system.dispatcher
+  implicit lazy val ec: ExecutionContext = Boot.system.dispatcher//some problems with this
 }
