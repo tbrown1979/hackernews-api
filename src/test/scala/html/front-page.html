@@ -1,0 +1,158 @@
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="news.css?zMV4H8oJn3KKjpenXRmm">
+    <link rel="shortcut icon" href="favicon.ico">
+    <script type="text/javascript">
+      function byId(id) {
+        return document.getElementById(id);
+      }
+
+      function vote(node) {
+        var v = node.id.split(/_/);   // {'up', '123'}
+        var item = v[1];
+
+        // hide arrows
+        byId('up_'   + item).style.visibility = 'hidden';
+        byId('down_' + item).style.visibility = 'hidden';
+
+        // ping server
+        var ping = new Image();
+        ping.src = node.href;
+
+        return false; // cancel browser nav
+      }
+    </script>
+    <title>Hacker News</title>
+  </head>
+  <body>
+    <center>
+      <table border=0 cellpadding=0 cellspacing=0 width="85%" bgcolor=#f6f6ef>
+        <tr>
+          <td bgcolor=#ff6600>
+            <table border=0 cellpadding=0 cellspacing=0 width="100%" style="padding:2px">
+              <tr>
+                <td style="width:18px;padding-right:4px"><a href="http://www.ycombinator.com"><img src="y18.gif" width=18 height=18 style="border:1px #ffffff solid;"></img></a></td>
+                <td style="line-height:12pt; height:10px;"><span class="pagetop"><b><a href="news">Hacker News</a></b><img src="s.gif" height=1 width=10><a href="newest">new</a> | <a href="threads?id=tinygram">threads</a> | <a href="newcomments">comments</a> | <a href="show">show</a> | <a href="ask">ask</a> | <a href="jobs">jobs</a> | <a href="submit">submit</a></span></td>
+                <td style="text-align:right;padding-right:4px;"><span class="pagetop"><a href="user?id=tinygram"><font color=#3c963c>tinygram</font></a>&nbsp;(1)&nbsp;|&nbsp;<a href="logout?whence=%6e%65%77%73">logout</a></span></td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        <tr style="height:10px"></tr>
+        <tr>
+          <td>
+            <table border=0 cellpadding=0 cellspacing=0>
+              <tr>
+                <td align=right valign=top class="title">1.</td>
+                <td>
+                  <center>
+                    <a id=up_7995728 onclick="return vote(this)" href="vote?for=7995728&amp;dir=up&amp;by=tinygram&amp;auth=730fab57af989c14dec448488ee721f4e08b2a15&amp;whence=%6e%65%77%73">
+                      <div class="votearrow" title="upvote"></div>
+                    </a>
+                    <span id=down_7995728></span>
+                  </center>
+                </td>
+                <td class="title"><a href="https://the-pastry-box-project.net/ed-finkler/2014-july-6">The Developer's Dystopian Future</a><span class="comhead"> (the-pastry-box-project.net) </span></td>
+              </tr>
+              <tr>
+                <td colspan=2></td>
+                <td class="subtext"><span id=score_7995728>223 points</span> by <a href="user?id=bjxrn">bjxrn</a> 4 hours ago  | <a href="item?id=7995728">103 comments</a></td>
+              </tr>
+              <tr style="height:5px"></tr>
+              <tr>
+                <td align=right valign=top class="title">2.</td>
+                <td>
+                  <center>
+                    <a id=up_7996124 onclick="return vote(this)" href="vote?for=7996124&amp;dir=up&amp;by=tinygram&amp;auth=352b32f332135b236e16fc2b7cfdec8e20c8c2fb&amp;whence=%6e%65%77%73">
+                      <div class="votearrow" title="upvote"></div>
+                    </a>
+                    <span id=down_7996124></span>
+                  </center>
+                </td>
+                <td class="title"><a href="http://washingtonpost.com/world/national-security/cia-employees-quest-to-release-information-destroyed-my-entire-career/2014/07/04/e95f7802-0209-11e4-8572-4b1b969b6322_story.html">CIA employee’s quest to release information ‘destroyed my entire career’</a><span class="comhead"> (washingtonpost.com) </span></td>
+              </tr>
+              <tr>
+                <td colspan=2></td>
+                <td class="subtext"><span id=score_7996124>123 points</span> by <a href="user?id=gluxon">gluxon</a> 3 hours ago  | <a href="item?id=7996124">24 comments</a></td>
+              </tr>
+              <tr style="height:5px"></tr>
+              <tr>
+                <td align=right valign=top class="title">3.</td>
+                <td>
+                  <center>
+                    <a id=up_7996380 onclick="return vote(this)" href="vote?for=7996380&amp;dir=up&amp;by=tinygram&amp;auth=7e7eed94ffa9ad7a7c8017163a8ea037620c02f8&amp;whence=%6e%65%77%73">
+                      <div class="votearrow" title="upvote"></div>
+                    </a>
+                    <span id=down_7996380></span>
+                  </center>
+                </td>
+                <td class="title"><a href="http://www.tsa.gov/press/releases/2014/07/06/enhanced-security-measures-certain-airports-overseas">TSA: don't bring uncharged devices from oversea</a><span class="comhead"> (tsa.gov) </span></td>
+              </tr>
+              <tr>
+                <td colspan=2></td>
+                <td class="subtext"><span id=score_7996380>31 points</span> by <a href="user?id=alternize">alternize</a> 1 hour ago  | <a href="item?id=7996380">19 comments</a></td>
+              </tr>
+              <tr style="height:5px"></tr>
+              <tr>
+                <td align=right valign=top class="title">4.</td>
+                <td>
+                  <center>
+                    <a id=up_7996210 onclick="return vote(this)" href="vote?for=7996210&amp;dir=up&amp;by=tinygram&amp;auth=5096e75708a36bdd01351d6135a7c6104b8e8bec&amp;whence=%6e%65%77%73">
+                      <div class="votearrow" title="upvote"></div>
+                    </a>
+                    <span id=down_7996210></span>
+                  </center>
+                </td>
+                <td class="title"><a href="http://calnewport.com/blog/2014/07/04/how-to-read-proofs-faster-a-summary-of-useful-advice/">How to Read Proofs Faster: A Summary of Useful Advice</a><span class="comhead"> (calnewport.com) </span></td>
+              </tr>
+              <tr>
+                <td colspan=2></td>
+                <td class="subtext"><span id=score_7996210>21 points</span> by <a href="user?id=dlo">dlo</a> 2 hours ago  | <a href="item?id=7996210">2 comments</a></td>
+              </tr>
+              <tr style="height:5px"></tr>
+              <tr>
+                <td align=right valign=top class="title">5.</td>
+                <td>
+                  <center>
+                    <a id=up_7995741 onclick="return vote(this)" href="vote?for=7995741&amp;dir=up&amp;by=tinygram&amp;auth=e7401cd61317aad545ca650b24b4246fa7754944&amp;whence=%6e%65%77%73">
+                      <div class="votearrow" title="upvote"></div>
+                    </a>
+                    <span id=down_7995741></span>
+                  </center>
+                </td>
+                <td class="title"><a href="http://www.boomcalifornia.com/2014/06/living-in-a-fools-paradise/">Living in a Fool’s Paradise</a><span class="comhead"> (boomcalifornia.com) </span></td>
+              </tr>
+              <tr>
+                <td colspan=2></td>
+                <td class="subtext"><span id=score_7995741>38 points</span> by <a href="user?id=Mz">Mz</a> 4 hours ago  | <a href="item?id=7995741">12 comments</a></td>
+              </tr>
+              <tr style="height:5px"></tr>
+              <tr style="height:5px"></tr>
+              <tr style="height:10px"></tr>
+              <tr>
+                <td colspan=2></td>
+                <td class="title"><a href="/x?fnid=C9PVoO7SUtimj9xVWxXIZ9" rel="nofollow">More</a></td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <img src="s.gif" height=10 width=0>
+            <table width="100%" cellspacing=0 cellpadding=1>
+              <tr>
+                <td bgcolor=#ff6600></td>
+              </tr>
+            </table>
+            <br>
+            <center>
+              <span class="yclinks"><a href="newsguidelines.html">Guidelines</a> | <a href="newsfaq.html">FAQ</a> | <a href="lists">Lists</a> | <a href="rss">RSS</a> | <a href="bookmarklet.html">Bookmarklet</a> | <a href="dmca.html">DMCA</a> | <a href="newsnews.html">News News</a> | <a href="https://github.com/HackerNews/HN/issues">Bugs and Feature Requests</a> | <a href="http://www.ycombinator.com/">Y Combinator</a> | <a href="http://www.ycombinator.com/apply/">Apply</a> | <a href="http://www.ycombinator.com/resources/">Library</a> | <a href="http://www.ycombinator.com/contact/">Contact</a></span><br><br>
+              <form method=get action="//hn.algolia.com/">Search: <input type=text name="q" value="" size=17></form>
+              <br>
+            </center>
+          </td>
+        </tr>
+      </table>
+    </center>
+  </body>
+</html>

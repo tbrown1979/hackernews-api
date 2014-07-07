@@ -5,7 +5,12 @@ import org.jsoup.nodes.{Document, Element}
 import scala.concurrent.Future
 
 case class PostHtml(title: Element, info: Element)
-case class Post(author: String, title: String, link: String, points: Int, comments: Int)
+case class Post(author:   String,
+                title:    String,
+                link:     String,
+                points:   Int,
+                comments: Int)
+
 case class Posts(nextId: String, items: List[Post])
 
 object Post extends DefaultJsonProtocol {

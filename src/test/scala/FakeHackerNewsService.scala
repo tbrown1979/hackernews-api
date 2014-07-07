@@ -15,6 +15,7 @@ import scala.concurrent.duration._
 object HtmlPath {
   val path = "src/test/scala/html/"
   val newest = "newest.html"
+  val frontPage = "front-page.html"
 }
 
 trait MockFetcher extends Fetcher {
@@ -24,7 +25,7 @@ trait MockFetcher extends Fetcher {
     val file = ext match {
       case "newest" => new File(path + newest)
       case "show" => new File("/html/....html")
-      case _ => new File(path + newest)
+      case _ => new File(path + frontPage)
     }
     Future(Jsoup.parse(file, "UTF-8", "http://example.com/"))
   }

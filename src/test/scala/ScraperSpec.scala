@@ -19,12 +19,29 @@ object ScraperSpec extends Specification {
 
   "HNScraper" should {
 
-    "return all posts for a given page" in new context {
-      Await.result(scraper.getNewest, 1000000000 nanos).items.size === 4
+    "return all the newest hacker news posts" in new Context {
+      newestPage.items.size === 4
+    }
+
+    "return all the front page hacker news posts" in new Context {
+      frontPage.items.size === 5
+    }
+
+    "return the correct first post from the front page" in new Context {
+      val firstPost = Post("bjxrn","The Developer's Dystopian Future","https://the-pastry-box-project.net/ed-finkler/2014-july-6",223,103)
+      frontPage.items.head === firstPost
+    }
+
+    "return the correct nextId for the front page" in new Context {
+      val nextId = frontPage.nextId
+      nextId === "/x?fnid=C9PVoO7SUtimj9xVWxXIZ9"
     }
   }
 }
 
-trait context extends Scope {
+trait Context extends Scope {
   val scraper = new MockService{}
+  val frontPage = Await.result(scraper.getFrontPagePosts, DurationInt(10).second)
+  val newestPage = Await.result(scraper.getNewest, DurationInt(10).second)
+
 }
